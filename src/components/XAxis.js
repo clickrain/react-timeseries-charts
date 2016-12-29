@@ -12,9 +12,9 @@ import merge from 'merge';
 import moment from 'moment';
 import React from 'react';
 import ReactDOM from 'react-dom';  // eslint-disable-line
-import { axisBottom } from 'd3-axis';
+
+import { TimeAxis } from 'react-axis';
 import { select } from 'd3-selection';
-import { timeDay, utcDay, timeMonth, utcMonth, timeYear, utcYear } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
 
 import 'moment-duration-format';
@@ -39,26 +39,9 @@ const defaultStyle = {
  * as a result of you specifying the timerange for the chart. Please see the API
  * docs for ChartContainer for more information.
  */
-export default class TimeAxis extends React.Component {
+export default class XAxis extends React.Component {
 
-  componentDidMount() {
-    this.renderTimeAxis(this.props.scale);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { scale, utc } = nextProps;
-    if (scaleAsString(this.props.scale) !== scaleAsString(scale) ||
-      this.props.utc !== utc) {
-      this.renderTimeAxis(scale);
-    }
-  }
-
-  // Force the component not to update because d3 will control the
-  // DOM from this point down.
-  shouldComponentUpdate() {  // eslint-disable-line
-    return false;
-  }
-
+  /*
   renderTimeAxis(scale) {
     let axis;
 
@@ -91,6 +74,7 @@ export default class TimeAxis extends React.Component {
 
     // Style
 
+
     const labelStyle = merge(true,
                  defaultStyle.labels,
                  this.props.style.labels ? this.props.style.labels : {});
@@ -99,53 +83,32 @@ export default class TimeAxis extends React.Component {
                 this.props.style.axis ? this.props.style.axis : {});
     const { axisColor } = axisStyle;
     const { labelColor, labelWeight, labelSize } = labelStyle;
+  */
+   
+  render() {
+    const [ beginTime, endTime ] = this.props.scale.domain();
+    const [ x1, x2 ] = this.props.scale.range();
+    console.log(beginTime, endTime, this.props.scale.range());
 
-
-    // Remove the old axis from under this DOM node
-    select(ReactDOM.findDOMNode(this)).selectAll("*").remove(); // eslint-disable-line
-
-    //
-    // Draw the new axis
-    //
-                                        // XXX
-    select(ReactDOM.findDOMNode(this))  // eslint-disable-line
-      .append('g')
-        .attr('class', 'x axis')
-        .style('stroke', 'none')
-        .style('fill', labelColor)
-        .style('font-weight', labelWeight)
-        .style('font-size', labelSize)
-        .call(axis.tickSize(tickSize));
-                                        // XXX
-    select(ReactDOM.findDOMNode(this))  // eslint-disable-line
-      .select('g')
-      .selectAll('.tick')
-      .select('text')
-      .style('fill', labelColor)
-      .style('stroke', 'none');
-                                        // XXX
-    select(ReactDOM.findDOMNode(this))  // eslint-disable-line
-      .select('g')
-      .selectAll('.tick')
-      .select('line')
-      .style('stroke', axisColor);
-                                        // XXX
-    select(ReactDOM.findDOMNode(this))  // eslint-disable-line
-      .select('g')
-      .select('path').remove();
-  }
-
-  render() {                            // eslint-disable-line
-    return <g />;
+    return (
+      <TimeAxis
+        beginTime={beginTime}
+        endTime={endTime}
+        timezone="America/Chicago"
+        position="bottom"
+        width={x2 - x1}
+        height={this.props.height}
+      />
+    );
   }
 }
 
-TimeAxis.defaultProps = {
+XAxis.defaultProps = {
   showGrid: false,
   style: defaultStyle,
 };
 
-TimeAxis.propTypes = {
+XAxis.propTypes = {
   scale: React.PropTypes.func.isRequired,
   showGrid: React.PropTypes.bool,
   gridHeight: React.PropTypes.number,

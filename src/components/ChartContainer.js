@@ -18,7 +18,7 @@ import Brush from './Brush';
 import ChartRow from './ChartRow';
 import Charts from './Charts';
 import EventHandler from './EventHandler';
-import TimeAxis from './TimeAxis';
+import XAxis from './XAxis';
 import TimeMarker from './TimeMarker';
 
 const defaultTimeAxisStyle = {
@@ -272,7 +272,7 @@ export default class ChartContainer extends React.Component {
     }
 
     //
-    // TimeAxis
+    // XAxis
     //
 
     const xStyle = {
@@ -288,7 +288,7 @@ export default class ChartContainer extends React.Component {
           x1={-leftWidth} y1={0.5} x2={this.props.width} y2={0.5}
           style={xStyle}
         />
-        <TimeAxis
+        <XAxis
           scale={timeScale}
           utc={this.props.utc}
           style={this.props.timeAxisStyle}
