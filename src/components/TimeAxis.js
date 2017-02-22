@@ -42,14 +42,14 @@ const defaultStyle = {
 export default class TimeAxis extends React.Component {
 
   componentDidMount() {
-    this.renderTimeAxis(this.props.scale);
+    this.renderTimeAxis(this.props.scale, this.props.format);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { scale, utc } = nextProps;
+    const { scale, utc, format } = nextProps;
     if (scaleAsString(this.props.scale) !== scaleAsString(scale) ||
-      this.props.utc !== utc) {
-      this.renderTimeAxis(scale);
+      this.props.utc !== utc || this.props.format !== format) {
+      this.renderTimeAxis(scale, format);
     }
   }
 
@@ -59,28 +59,28 @@ export default class TimeAxis extends React.Component {
     return false;
   }
 
-  renderTimeAxis(scale) {
+  renderTimeAxis(scale, format) {
     let axis;
 
     const tickSize = this.props.showGrid ? -this.props.gridHeight : 10;
     const utc = this.props.utc;
 
-    if (this.props.format === 'day') {
+    if (format === 'day') {
       axis = axisBottom(scale)
         .tickArguments([utc ? utcDay : timeDay, 1])
         .tickFormat(timeFormat('%d'))
         .tickSizeOuter(0);
-    } else if (this.props.format === 'month') {
+    } else if (format === 'month') {
       axis = axisBottom(scale)
         .tickArguments([utc ? utcMonth : timeMonth, 1])
         .tickFormat(timeFormat('%B'))
         .tickSizeOuter(0);
-    } else if (this.props.format === 'year') {
+    } else if (format === 'year') {
       axis = axisBottom(scale)
         .tickArguments([utc ? utcYear : timeYear, 1])
         .tickFormat(timeFormat('%Y'))
         .tickSizeOuter(0);
-    } else if (this.props.format === 'relative') {
+    } else if (format === 'relative') {
       axis = axisBottom(scale)
         .tickFormat(d => moment.duration(+d).format())
         .tickSizeOuter(0);
